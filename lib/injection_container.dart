@@ -9,14 +9,10 @@ import 'package:flutter_template/features/number_trivia/data/repositories/number
 import 'package:flutter_template/features/number_trivia/domain/repositories/number_trivia_repository.dart';
 import 'package:flutter_template/features/number_trivia/domain/usecases/get_concrete_number_trivia.dart';
 import 'package:flutter_template/features/number_trivia/domain/usecases/get_random_number_trivia.dart';
-import 'package:flutter_template/features/number_trivia/presentation/bloc/number_trivia_bloc.dart';
-import 'package:get_it/get_it.dart';
+import 'package:flutter_template/features/number_trivia/presentation/getx/number_trivia_controller.dart';
+import 'package:get/instance_manager.dart';
 import 'package:hive_flutter/hive_flutter.dart';
 import 'package:internet_connection_checker/internet_connection_checker.dart';
-
-// Dependency injection file
-
-final sl = GetIt.instance;
 
 Future<void> init() async {
   final options = BaseOptions(
@@ -31,44 +27,34 @@ Future<void> init() async {
   final Box<dynamic> hiveBox = await Hive.openBox("myBox");
 
   // // External
-  sl.registerLazySingleton(() => hiveBox);
-  sl.registerLazySingleton(() => Dio(options));
-  sl.registerLazySingleton(() => InternetConnectionChecker());
-  sl.registerLazySingleton(() => Connectivity());
-  sl.registerLazySingleton<NetworkInfo>(() => NetworkInfoImpl(
-        connectivity: sl(),
-        dataChecker: sl(),
-      ));
-
-  // Bloc
-  sl.registerFactory(() => NumberTriviaBloc(
-        getConcreteNumberTrivia: sl(),
-        getRandomNumberTrivia: sl(),
-        inputConverter: sl(),
-      ));
-
-  // use cases
-  sl.registerLazySingleton(() => GetConcreteNumberTrivia(repository: sl()));
-  sl.registerLazySingleton(() => GetRandomNumberTrivia(repository: sl()));
+  Get.put(hiveBox, permanent: true);
+  Get.put(Dio(options), permanent: true);
+  Get.put(InternetConnectionChecker(), permanent: true);
+  Get.put(Connectivity(), permanent: true);
+  Get.put<NetworkInfo>(
+      NetworkInfoImpl(connectivity: Get.find(), dataChecker: Get.find()),
+      permanent: true);
 
   // data sources
-  sl.registerLazySingleton<NumberTriviaRemoteDataSource>(
-      () => NumberTriviaRemoteDataSourceImpl(
-            dioClient: sl(),
-          ));
-
-  sl.registerLazySingleton<NumberTriviaLocalDataSource>(
-    () => NumberTriviaLocalDataSourceImpl(box: sl()),
-  );
-
-  // core
-  sl.registerLazySingleton(() => InputConverter());
+  Get.lazyPut<NumberTriviaRemoteDataSource>(
+      () => NumberTriviaRemoteDataSourceImpl(dioClient: Get.find()));
+  Get.lazyPut<NumberTriviaLocalDataSource>(
+      () => NumberTriviaLocalDataSourceImpl(box: Get.find()));
 
   // repository
-  sl.registerLazySingleton<NumberTriviaRepository>(
-      () => NumberTriviaRepositoryImpl(
-            remoteDataSource: sl(),
-            localDataSource: sl(),
-            networkInfo: sl(),
-          ));
+  Get.lazyPut<NumberTriviaRepository>(() => NumberTriviaRepositoryImpl(
+      remoteDataSource: Get.find(),
+      localDataSource: Get.find(),
+      networkInfo: Get.find()));
+
+  // use cases
+  Get.lazyPut(() => GetConcreteNumberTrivia(repository: Get.find()));
+  Get.lazyPut(() => GetRandomNumberTrivia(repository: Get.find()));
+
+  // core
+  Get.lazyPut(() => InputConverter());
+
+  // GetX Controller
+  Get.lazyPut(() => NumberTriviaController(Get.find(), Get.find(), Get.find()));
+ 
 }

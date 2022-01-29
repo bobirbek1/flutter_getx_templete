@@ -109,7 +109,7 @@ void main() {
 
         verify(mockRemoteDataSource!.getConcreteNumberTrivia(tNumber));
         verifyZeroInteractions(mockLocalDataSource);
-        expect(result, equals(Left(ServerUnknownFailure())));
+        expect(result, equals(Left(ServerUnknownFailure(message: ServerUnknownException().toString()))));
       });
     });
     runTestsOffline(() {
@@ -188,7 +188,7 @@ void main() {
 
         verify(mockRemoteDataSource!.getRandomNumberTrivia());
         verifyZeroInteractions(mockLocalDataSource);
-        expect(result, equals(Left(ServerUnknownFailure())));
+        expect(result, equals(Left(ServerUnknownFailure(message: ServerUnknownException().toString()))));
       });
     });
     runTestsOffline(() {

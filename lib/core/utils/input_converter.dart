@@ -1,6 +1,7 @@
 
 
 import 'package:dartz/dartz.dart';
+import 'package:flutter_template/app/app_constants.dart';
 import 'package:flutter_template/core/error/failure.dart';
 
 
@@ -11,11 +12,11 @@ class InputConverter {
       if (integer < 0) throw const FormatException();
       return Right(integer);
     } on FormatException {
-      return const Left(InvalidInputFailure());
+      return Left(InvalidInputFailure(message: INVALID_INPUT_FAILURE_MESSAGE));
     }
   }
 }
 
 class InvalidInputFailure extends Failure {
-  const InvalidInputFailure({String? message}) : super(message: message);
+  InvalidInputFailure({String? message}) : super(message: message);
 }

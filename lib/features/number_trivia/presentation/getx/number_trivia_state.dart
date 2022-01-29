@@ -1,4 +1,5 @@
-part of 'number_trivia_bloc.dart';
+import 'package:equatable/equatable.dart';
+import 'package:flutter_template/features/number_trivia/domain/entities/number_trivia.dart';
 
 abstract class NumberTriviaState extends Equatable {
   final List property;
