@@ -11,8 +11,8 @@ import 'package:flutter_template/features/number_trivia/domain/usecases/get_conc
 import 'package:flutter_template/features/number_trivia/domain/usecases/get_random_number_trivia.dart';
 import 'package:flutter_template/features/number_trivia/presentation/getx/number_trivia_controller.dart';
 import 'package:get/instance_manager.dart';
-import 'package:hive_flutter/hive_flutter.dart';
 import 'package:internet_connection_checker/internet_connection_checker.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 Future<void> init() async {
   final options = BaseOptions(
@@ -23,11 +23,10 @@ Future<void> init() async {
     contentType: Headers.jsonContentType,
   );
 
-  await Hive.initFlutter();
-  final Box<dynamic> hiveBox = await Hive.openBox("myBox");
+  final prefs = await SharedPreferences.getInstance();
 
   // // External
-  Get.put(hiveBox, permanent: true);
+  Get.put(prefs, permanent: true);
   Get.put(Dio(options), permanent: true);
   Get.put(InternetConnectionChecker(), permanent: true);
   Get.put(Connectivity(), permanent: true);
@@ -39,7 +38,7 @@ Future<void> init() async {
   Get.lazyPut<NumberTriviaRemoteDataSource>(
       () => NumberTriviaRemoteDataSourceImpl(dioClient: Get.find()));
   Get.lazyPut<NumberTriviaLocalDataSource>(
-      () => NumberTriviaLocalDataSourceImpl(box: Get.find()));
+      () => NumberTriviaLocalDataSourceImpl(prefs: Get.find()));
 
   // repository
   Get.lazyPut<NumberTriviaRepository>(() => NumberTriviaRepositoryImpl(
@@ -56,5 +55,4 @@ Future<void> init() async {
 
   // GetX Controller
   Get.lazyPut(() => NumberTriviaController(Get.find(), Get.find(), Get.find()));
- 
 }

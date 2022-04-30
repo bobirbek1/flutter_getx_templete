@@ -37,9 +37,6 @@ dependencies:
  
   #  GetX
   get: ^4.6.1
-  # Hive stroage for local cache
-  hive: ^2.0.5
-  hive_flutter: ^1.1.0
   # Value equality
   equatable: ^2.0.3
   # Functionla programming thingies
@@ -48,6 +45,10 @@ dependencies:
   connectivity_plus: ^2.2.0
   dio: ^4.0.4
   internet_connection_checker: ^0.0.1+3
+  # Intl package for date format
+  intl: ^0.17.0
+  # Shared prefrerences for local cache
+  shared_preferences: ^2.0.13
   
   
   

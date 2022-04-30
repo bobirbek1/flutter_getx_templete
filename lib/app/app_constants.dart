@@ -3,7 +3,8 @@ const int CONNECT_TIME_OUT = 10000;
 const int SEND_TIME_OUT = 10000;
 const int RECEIVE_TIME_OUT = 10000;
 
-
+// Keys for local cache
+const String CACHED_NUMBER_TRIVIA = "CACHED_NUMBER_TRIVIA";
 
 // Failure messages
 const String SERVER_FAILURE_MESSAGE = 'Server Failure';
